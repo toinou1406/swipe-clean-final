@@ -111,4 +111,17 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get chooseYourLanguage => 'Choose your language';
+
+  @override
+  String get permissionTitle => 'Photo Access Required';
+
+  @override
+  String get permissionDescription =>
+      'FastClean needs access to your photos to help you clean them up.';
+
+  @override
+  String get grantPermission => 'Grant Permission';
+
+  @override
+  String get totalSpaceSaved => 'Total Space Saved';
 }

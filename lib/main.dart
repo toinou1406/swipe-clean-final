@@ -9,7 +9,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:photo_manager/photo_manager.dart';
-import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'l10n/app_localizations.dart';
@@ -65,121 +64,118 @@ class _MyAppState extends State<MyApp> {
     });
   }
 
- @override
-Widget build(BuildContext context) {
-  const Color primarySeedColor = Color(0xFF2E7D32); // Deep Green from Logo
+  @override
+  Widget build(BuildContext context) {
+    const Color primarySeedColor = Color(0xFF2E7D32); // Deep Green from Logo
 
-  final TextTheme appTextTheme = GoogleFonts.nunitoTextTheme(
-    ThemeData.dark().textTheme,
-  ).copyWith(
-    displayLarge: GoogleFonts.nunito(fontSize: 52, fontWeight: FontWeight.w900, color: Colors.white, height: 1.2),
-    displayMedium: GoogleFonts.nunito(fontSize: 42, fontWeight: FontWeight.w800, color: Colors.white, height: 1.2),
-    displaySmall: GoogleFonts.nunito(fontSize: 32, fontWeight: FontWeight.w800, color: Colors.white, height: 1.2),
-    headlineMedium: GoogleFonts.nunito(fontSize: 26, fontWeight: FontWeight.w700, color: Colors.white.withAlpha(242)), // ~0.95 opacity
-    headlineSmall: GoogleFonts.nunito(fontSize: 22, fontWeight: FontWeight.w700, color: Colors.white.withAlpha(229)), // ~0.9 opacity
-    titleLarge: GoogleFonts.nunito(fontSize: 20, fontWeight: FontWeight.w600, color: Colors.white.withAlpha(217)), // ~0.85 opacity
-    titleMedium: GoogleFonts.nunito(fontSize: 16, fontWeight: FontWeight.w600, color: Colors.white.withAlpha(204)), // ~0.8 opacity
-    bodyLarge: GoogleFonts.nunito(fontSize: 16, color: Colors.white.withAlpha(191), height: 1.5), // ~0.75 opacity
-    bodyMedium: GoogleFonts.nunito(fontSize: 14, color: Colors.white.withAlpha(179), height: 1.5), // ~0.7 opacity
-    labelLarge: GoogleFonts.nunito(fontSize: 16, fontWeight: FontWeight.bold),
-  );
+    final TextTheme appTextTheme = GoogleFonts.nunitoTextTheme(
+      ThemeData.dark().textTheme,
+    ).copyWith(
+      displayLarge: GoogleFonts.nunito(fontSize: 52, fontWeight: FontWeight.w900, color: Colors.white, height: 1.2),
+      displayMedium: GoogleFonts.nunito(fontSize: 42, fontWeight: FontWeight.w800, color: Colors.white, height: 1.2),
+      displaySmall: GoogleFonts.nunito(fontSize: 32, fontWeight: FontWeight.w800, color: Colors.white, height: 1.2),
+      headlineMedium: GoogleFonts.nunito(fontSize: 26, fontWeight: FontWeight.w700, color: Colors.white.withAlpha(242)), // ~0.95 opacity
+      headlineSmall: GoogleFonts.nunito(fontSize: 22, fontWeight: FontWeight.w700, color: Colors.white.withAlpha(229)), // ~0.9 opacity
+      titleLarge: GoogleFonts.nunito(fontSize: 20, fontWeight: FontWeight.w600, color: Colors.white.withAlpha(217)), // ~0.85 opacity
+      titleMedium: GoogleFonts.nunito(fontSize: 16, fontWeight: FontWeight.w600, color: Colors.white.withAlpha(204)), // ~0.8 opacity
+      bodyLarge: GoogleFonts.nunito(fontSize: 16, color: Colors.white.withAlpha(191), height: 1.5), // ~0.75 opacity
+      bodyMedium: GoogleFonts.nunito(fontSize: 14, color: Colors.white.withAlpha(179), height: 1.5), // ~0.7 opacity
+      labelLarge: GoogleFonts.nunito(fontSize: 16, fontWeight: FontWeight.bold),
+    );
 
-  final elevatedButtonTheme = ElevatedButtonThemeData(
-    style: ElevatedButton.styleFrom(
-      foregroundColor: Colors.white,
-      backgroundColor: primarySeedColor,
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-      padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 16),
-      textStyle: appTextTheme.labelLarge,
-      elevation: 2,
-      shadowColor: primarySeedColor.withAlpha(102), // ~0.4 opacity
-    ),
-  );
-
-  final cardTheme = CardTheme(
-    elevation: 0,
-    color: Colors.white.withAlpha(13), // ~0.05 opacity
-    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
-  );
-
-  final ThemeData lightTheme = ThemeData(
-    useMaterial3: true,
-    brightness: Brightness.light,
-    colorScheme: ColorScheme.fromSeed(
-      seedColor: primarySeedColor,
-      brightness: Brightness.light,
-      primary: primarySeedColor,
-      secondary: const Color(0xFF4CAF50),
-      surface: const Color(0xFFF5F5F5),
-      background: const Color(0xFFFFFFFF),
-    ),
-    textTheme: appTextTheme.apply(bodyColor: const Color(0xFF121212), displayColor: const Color(0xFF121212)),
-    scaffoldBackgroundColor: const Color(0xFFF9F9F9),
-    appBarTheme: AppBarTheme(
-      backgroundColor: Colors.transparent,
-      elevation: 0,
-      centerTitle: true,
-      titleTextStyle: appTextTheme.headlineSmall?.apply(color: const Color(0xFF121212)),
-      iconTheme: const IconThemeData(color: Color(0xFF121212)),
-    ),
-    elevatedButtonTheme: elevatedButtonTheme,
-    cardTheme: cardTheme,
-    dividerColor: Colors.black.withAlpha(26), // ~0.1 opacity
-  );
-
-  final ThemeData darkTheme = ThemeData(
-    useMaterial3: true,
-    brightness: Brightness.dark,
-    colorScheme: ColorScheme.fromSeed(
-      seedColor: primarySeedColor,
-      brightness: Brightness.dark,
-      primary: primarySeedColor,
-      secondary: const Color(0xFF66BB6A),
-      surface: const Color(0xFF1E1E1E),
-      background: const Color(0xFF121212),
-    ),
-    textTheme: appTextTheme,
-    scaffoldBackgroundColor: const Color(0xFF121212),
-    appBarTheme: AppBarTheme(
-      backgroundColor: Colors.transparent,
-      elevation: 0,
-      centerTitle: true,
-      titleTextStyle: appTextTheme.headlineSmall,
-      iconTheme: IconThemeData(color: Colors.white.withAlpha(217)), // ~0.85 opacity
-    ),
-    elevatedButtonTheme: elevatedButtonTheme,
-    cardTheme: cardTheme,
-    dividerColor: Colors.white.withAlpha(26), // ~0.1 opacity
-  );
-
-  return MaterialApp(
-    onGenerateTitle: (context) => AppLocalizations.of(context)?.appTitle ?? 'FastClean',
-    theme: lightTheme,
-    darkTheme: darkTheme,
-    themeMode: ThemeMode.dark,
-    locale: _locale,
-    debugShowCheckedModeBanner: false,
-    initialRoute: widget.initialRoute,
-    routes: {
-      AppRoutes.home: (context) => const HomeScreen(),
-      AppRoutes.permission: (context) => PermissionScreen(
-        onPermissionGranted: () {
-          Navigator.pushReplacementNamed(context, AppRoutes.home);
-        },
-        onLocaleChanged: changeLocale,
+    final elevatedButtonTheme = ElevatedButtonThemeData(
+      style: ElevatedButton.styleFrom(
+        foregroundColor: Colors.white,
+        backgroundColor: primarySeedColor,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+        padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 16),
+        textStyle: appTextTheme.labelLarge,
+        elevation: 2,
+        shadowColor: primarySeedColor.withAlpha(102), // ~0.4 opacity
       ),
-      AppRoutes.settings: (context) => LanguageSettingsScreen(onLocaleChanged: changeLocale),
-    },
-    localizationsDelegates: const [
-      AppLocalizations.delegate,
-      GlobalMaterialLocalizations.delegate,
-      GlobalWidgetsLocalizations.delegate,
-      GlobalCupertinoLocalizations.delegate,
-    ],
-    supportedLocales: AppLocalizations.supportedLocales,
-  );
-}
+    );
 
+    final cardTheme = CardThemeData(
+      elevation: 0,
+      color: Colors.white.withAlpha(13), // ~0.05 opacity
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+    );
+
+    final ThemeData lightTheme = ThemeData(
+      useMaterial3: true,
+      brightness: Brightness.light,
+      colorScheme: ColorScheme.fromSeed(
+        seedColor: primarySeedColor,
+        brightness: Brightness.light,
+        primary: primarySeedColor,
+        secondary: const Color(0xFF4CAF50),
+        surface: const Color(0xFFF5F5F5),
+      ),
+      textTheme: appTextTheme.apply(bodyColor: const Color(0xFF121212), displayColor: const Color(0xFF121212)),
+      scaffoldBackgroundColor: const Color(0xFFF9F9F9),
+      appBarTheme: AppBarTheme(
+        backgroundColor: Colors.transparent,
+        elevation: 0,
+        centerTitle: true,
+        titleTextStyle: appTextTheme.headlineSmall?.apply(color: const Color(0xFF121212)),
+        iconTheme: const IconThemeData(color: Color(0xFF121212)),
+      ),
+      elevatedButtonTheme: elevatedButtonTheme,
+      cardTheme: cardTheme,
+      dividerColor: Colors.black.withAlpha(26), // ~0.1 opacity
+    );
+
+    final ThemeData darkTheme = ThemeData(
+      useMaterial3: true,
+      brightness: Brightness.dark,
+      colorScheme: ColorScheme.fromSeed(
+        seedColor: primarySeedColor,
+        brightness: Brightness.dark,
+        primary: primarySeedColor,
+        secondary: const Color(0xFF66BB6A),
+        surface: const Color(0xFF1E1E1E),
+      ),
+      textTheme: appTextTheme,
+      scaffoldBackgroundColor: const Color(0xFF121212),
+      appBarTheme: AppBarTheme(
+        backgroundColor: Colors.transparent,
+        elevation: 0,
+        centerTitle: true,
+        titleTextStyle: appTextTheme.headlineSmall,
+        iconTheme: IconThemeData(color: Colors.white.withAlpha(217)), // ~0.85 opacity
+      ),
+      elevatedButtonTheme: elevatedButtonTheme,
+      cardTheme: cardTheme,
+      dividerColor: Colors.white.withAlpha(26), // ~0.1 opacity
+    );
+
+    return MaterialApp(
+      onGenerateTitle: (context) => AppLocalizations.of(context).appTitle,
+      theme: lightTheme,
+      darkTheme: darkTheme,
+      themeMode: ThemeMode.dark,
+      locale: _locale,
+      debugShowCheckedModeBanner: false,
+      initialRoute: widget.initialRoute,
+      routes: {
+        AppRoutes.home: (context) => const HomeScreen(),
+        AppRoutes.permission: (context) => PermissionScreen(
+          onPermissionGranted: () {
+            Navigator.pushReplacementNamed(context, AppRoutes.home);
+          },
+          onLocaleChanged: changeLocale,
+        ),
+        AppRoutes.settings: (context) => LanguageSettingsScreen(onLocaleChanged: changeLocale),
+      },
+      localizationsDelegates: const [
+        AppLocalizations.delegate,
+        GlobalMaterialLocalizations.delegate,
+        GlobalWidgetsLocalizations.delegate,
+        GlobalCupertinoLocalizations.delegate,
+      ],
+      supportedLocales: AppLocalizations.supportedLocales,
+    );
+  }
 }
 
 class HomeScreen extends StatefulWidget {
@@ -194,7 +190,7 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
 
   StorageInfo? _storageInfo;
   double _spaceSaved = 0.0;
-  List<PhotoAnalysisResult> _selectedPhotos = [];
+  List<PhotoResult> _selectedPhotos = [];
   final Set<String> _ignoredPhotos = {};
   bool _isLoading = false;
   bool _isDeleting = false;
@@ -250,14 +246,13 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
     final hasScanned = prefs.getBool('has_scanned') ?? false;
 
     if (photoIds.isNotEmpty) {
-      List<PhotoAnalysisResult> restoredPhotos = [];
+      List<PhotoResult> restoredPhotos = [];
       for (final id in photoIds) {
         try {
           final asset = await AssetEntity.fromId(id);
           if (asset != null) {
             // The analysis result is not saved, so we create an empty one
-            restoredPhotos.add(PhotoAnalysisResult(asset, PhotoAnalysisResult.empty().blurriness, PhotoAnalysisResult.empty().isScreenshot, PhotoAnalysisResult.empty().duplicateOf));
-
+            restoredPhotos.add(PhotoResult(asset, PhotoAnalysisResult.empty()));
           }
         } catch (e) { /* Asset might have been deleted. */ }
       }
@@ -306,7 +301,6 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
 
   Future<void> _sortPhotos({bool rescan = false}) async {
     final l10n = AppLocalizations.of(context);
-    if (l10n == null) return;
 
     final sortingMessages = [
       l10n.sortingMessageAnalyzing,
@@ -327,7 +321,10 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
     _messageTimer?.cancel();
     int msgIndex = 0;
     _messageTimer = Timer.periodic(const Duration(seconds: 3), (timer) {
-      if (!_isLoading) { timer.cancel(); return; }
+      if (!_isLoading) {
+        timer.cancel();
+        return;
+      }
       setState(() => _sortingMessage = sortingMessages[++msgIndex % sortingMessages.length]);
     });
 
@@ -360,7 +357,7 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
     }
   }
 
-  void _preCachePhotoFiles(List<PhotoAnalysisResult> photos) {
+  void _preCachePhotoFiles(List<PhotoResult> photos) {
     for (final photo in photos) {
       photo.asset.file; // no need to await
     }
@@ -371,7 +368,6 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
     setState(() => _isDeleting = true);
 
     final l10n = AppLocalizations.of(context);
-    if (l10n == null) return;
 
     try {
       final photosToDelete = _selectedPhotos.where((p) => !_ignoredPhotos.contains(p.asset.id)).toList();
@@ -402,7 +398,7 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
         );
       }
       await _loadStorageInfo();
-    } catch (e,s) {
+    } catch (e, s) {
       developer.log('Error deleting photos', name: 'photo_cleaner.error', error: e, stackTrace: s);
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
@@ -430,7 +426,7 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
     final theme = Theme.of(context);
     final l10n = AppLocalizations.of(context);
 
-    if (!_isInitialized || l10n == null) {
+    if (!_isInitialized) {
       return Scaffold(body: Center(child: CircularProgressIndicator(color: theme.colorScheme.primary)));
     }
 
@@ -507,7 +503,7 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
       storageInfo: _storageInfo,
       spaceSaved: _spaceSaved,
       formattedSpaceSaved: _formatBytes(_spaceSaved),
-      totalSpaceSavedText: l10n?.totalSpaceSaved ?? 'Total Space Saved',
+      totalSpaceSavedText: l10n.totalSpaceSaved,
     );
   }
 
@@ -516,7 +512,6 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
 
     int photosToDeleteCount = _selectedPhotos.length - _ignoredPhotos.length;
     final l10n = AppLocalizations.of(context);
-    if (l10n == null) return const SizedBox.shrink();
 
     return Padding(
       padding: const EdgeInsets.fromLTRB(20, 12, 20, 20),
@@ -576,7 +571,7 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
 }
 
 class PhotoCard extends StatefulWidget {
-  final PhotoAnalysisResult photo;
+  final PhotoResult photo;
   final bool isIgnored;
   final VoidCallback onToggleKeep;
   final VoidCallback onOpenFullScreen;
@@ -620,7 +615,6 @@ class _PhotoCardState extends State<PhotoCard> {
                 Image.memory(_thumbnailData!, fit: BoxFit.cover)
               else
                 Container(color: theme.colorScheme.surface),
-
               AnimatedContainer(
                 duration: const Duration(milliseconds: 300),
                 decoration: BoxDecoration(
@@ -632,7 +626,6 @@ class _PhotoCardState extends State<PhotoCard> {
                   borderRadius: BorderRadius.circular(13),
                 ),
               ),
-
               AnimatedOpacity(
                 opacity: widget.isIgnored ? 1.0 : 0.0,
                 duration: const Duration(milliseconds: 300),
@@ -642,15 +635,14 @@ class _PhotoCardState extends State<PhotoCard> {
                     children: [
                       Icon(Icons.check_circle_outline_rounded, color: Colors.white.withAlpha(229), size: 32), // ~0.9 opacity
                       const SizedBox(height: 4),
-                      if (l10n != null)
-                        Text(
-                          l10n.keep.toUpperCase(),
-                          style: theme.textTheme.bodyMedium?.copyWith(
-                            color: Colors.white.withAlpha(229), // ~0.9 opacity
-                            fontWeight: FontWeight.bold,
-                            letterSpacing: 0.5,
-                          ),
+                      Text(
+                        l10n.keep.toUpperCase(),
+                        style: theme.textTheme.bodyMedium?.copyWith(
+                          color: Colors.white.withAlpha(229), // ~0.9 opacity
+                          fontWeight: FontWeight.bold,
+                          letterSpacing: 0.5,
                         ),
+                      ),
                     ],
                   ),
                 ),

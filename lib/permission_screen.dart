@@ -60,11 +60,9 @@ class _PermissionScreenState extends State<PermissionScreen> with SingleTickerPr
     } else {
       if (mounted) {
         final l10n = AppLocalizations.of(context);
-        if (l10n != null) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text(l10n.photoAccessRequired)),
-          );
-        }
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text(l10n.photoAccessRequired)),
+        );
       }
     }
   }
@@ -87,11 +85,6 @@ class _PermissionScreenState extends State<PermissionScreen> with SingleTickerPr
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
     final theme = Theme.of(context);
-
-    if (l10n == null) {
-      // Localization not yet loaded
-      return const Scaffold(body: Center(child: CircularProgressIndicator()));
-    }
 
     return Scaffold(
       body: NoiseBox(
@@ -131,7 +124,7 @@ class _PermissionScreenState extends State<PermissionScreen> with SingleTickerPr
                   ElevatedButton(
                     onPressed: _requestPermission,
                     style: theme.elevatedButtonTheme.style?.copyWith(
-                      padding: MaterialStateProperty.all(const EdgeInsets.symmetric(vertical: 20)),
+                      padding: WidgetStateProperty.all(const EdgeInsets.symmetric(vertical: 20)),
                     ),
                     child: Text(l10n.grantPermission),
                   ),

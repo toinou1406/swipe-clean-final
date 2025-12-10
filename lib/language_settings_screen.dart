@@ -51,10 +51,10 @@ Widget build(BuildContext context) {
   final l10n = AppLocalizations.of(context);
   final theme = Theme.of(context);
 
-  if (_currentLanguageCode == null || l10n == null) {
+  if (_currentLanguageCode == null) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(l10n?.settings ?? 'Settings'), 
+        title: Text(l10n.settings), 
         centerTitle: true,
       ),
       body: const Center(child: CircularProgressIndicator()),

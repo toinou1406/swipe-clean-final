@@ -287,6 +287,30 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Choose your language'**
   String get chooseYourLanguage;
+
+  /// No description provided for @permissionTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Photo Access Required'**
+  String get permissionTitle;
+
+  /// No description provided for @permissionDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'FastClean needs access to your photos to help you clean them up.'**
+  String get permissionDescription;
+
+  /// No description provided for @grantPermission.
+  ///
+  /// In en, this message translates to:
+  /// **'Grant Permission'**
+  String get grantPermission;
+
+  /// No description provided for @totalSpaceSaved.
+  ///
+  /// In en, this message translates to:
+  /// **'Total Space Saved'**
+  String get totalSpaceSaved;
 }
 
 class _AppLocalizationsDelegate

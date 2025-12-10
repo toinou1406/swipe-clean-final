@@ -80,5 +80,9 @@
     "storageUsed": "Storage Used",
     "spaceSavedThisMonth": "Space Saved (This Month)",
     "appTitle": "FastClean",
-    "chooseYourLanguage": "Choose your language"
+    "chooseYourLanguage": "Choose your language",
+    "permissionTitle": "Photo Access Required",
+    "permissionDescription": "FastClean needs access to your photos to help you clean them up.",
+    "grantPermission": "Grant Permission",
+    "totalSpaceSaved": "Total Space Saved"
 }

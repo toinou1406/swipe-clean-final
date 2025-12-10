@@ -1,15 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:photo_view/photo_view.dart';
 import 'package:photo_view/photo_view_gallery.dart';
-import 'package:fastclean/photo_analyzer.dart';
+import 'package:fastclean/photo_cleaner_service.dart';
 import 'package:fastclean/l10n/app_localizations.dart';
 import 'package:flutter/services.dart';
-import 'package:photo_manager/photo_manager.dart';
 import 'package:photo_manager_image_provider/photo_manager_image_provider.dart';
 
-
 class FullScreenImageView extends StatefulWidget {
-  final List<PhotoAnalysisResult> photos;
+  final List<PhotoResult> photos;
   final int initialIndex;
   final Set<String> ignoredPhotos;
   final void Function(String) onToggleKeep;
@@ -93,7 +91,7 @@ class _FullScreenImageViewState extends State<FullScreenImageView> {
     ThemeData theme,
     AppLocalizations l10n,
     bool isKept,
-    PhotoAnalysisResult currentPhoto,
+    PhotoResult currentPhoto,
   ) {
     return AnimatedOpacity(
       opacity: _isUiVisible ? 1.0 : 0.0,
@@ -163,7 +161,7 @@ class _FullScreenImageViewState extends State<FullScreenImageView> {
     AppLocalizations l10n,
     ThemeData theme,
     bool isKept,
-    PhotoAnalysisResult currentPhoto,
+    PhotoResult currentPhoto,
   ) {
     return ElevatedButton.icon(
       icon: AnimatedSwitcher(

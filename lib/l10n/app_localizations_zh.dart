@@ -110,4 +110,16 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get chooseYourLanguage => '选择您的语言';
+
+  @override
+  String get permissionTitle => '需要访问权限';
+
+  @override
+  String get permissionDescription => '为了扫描和管理您的照片，此应用程序需要访问您设备存储的权限。';
+
+  @override
+  String get grantPermission => '授予权限';
+
+  @override
+  String get totalSpaceSaved => '总共节省的空间';
 }
