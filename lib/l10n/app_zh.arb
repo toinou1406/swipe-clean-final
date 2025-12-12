@@ -75,5 +75,8 @@
     "kept": "已保留",
     "failedToLoadImage": "加载图片失败",
     "storageUsed": "已用存储空间",
-    "spaceSavedThisMonth": "本月节省的空间"
+    "spaceSavedThisMonth": "本月节省的空间",
+    "readyToClean": "准备好清理了吗？",
+    "letsFindPhotos": "让我们查找一些可以安全删除的照片。",
+    "storageSpaceSaved": "节省的存储空间"
 }

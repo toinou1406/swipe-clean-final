@@ -122,4 +122,13 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get totalSpaceSaved => '总共节省的空间';
+
+  @override
+  String get readyToClean => '准备好清理了吗？';
+
+  @override
+  String get letsFindPhotos => '让我们查找一些可以安全删除的照片。';
+
+  @override
+  String get storageSpaceSaved => '节省的存储空间';
 }

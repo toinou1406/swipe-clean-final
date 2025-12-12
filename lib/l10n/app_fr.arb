@@ -34,5 +34,8 @@
     "permissionTitle": "Accès aux photos requis",
     "permissionDescription": "FastClean a besoin d'accéder à vos photos pour vous aider à les nettoyer.",
     "grantPermission": "Autoriser l'accès",
-    "totalSpaceSaved": "Espace total économisé"
+    "totalSpaceSaved": "Espace total économisé",
+    "readyToClean": "Prêt à nettoyer ?",
+    "letsFindPhotos": "Trouvons des photos que vous pouvez supprimer en toute sécurité.",
+    "storageSpaceSaved": "Espace de stockage économisé"
 }

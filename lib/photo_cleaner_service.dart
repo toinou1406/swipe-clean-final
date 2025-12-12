@@ -41,7 +41,7 @@ Future<dynamic> analyzePhotoInIsolate(IsolateData isolateData) async {
       return null;
     }
 
-    final Uint8List? imageBytes = await asset.thumbnailDataWithSize(const ThumbnailSize(64, 64));
+    final Uint8List? imageBytes = await asset.thumbnailDataWithSize(const ThumbnailSize(32, 32));
     if (imageBytes == null) {
       return null;
     }
@@ -110,16 +110,20 @@ class PhotoCleanerService {
     final screenshotAlbums = albums.where((album) => album.name.toLowerCase() == 'screenshots').toList();
     final otherAlbums = albums.where((album) => album.name.toLowerCase() != 'screenshots').toList();
 
-    // Get all screenshot assets
+    // Get a limited number of recent screenshot assets to speed up initialization
     for (final album in screenshotAlbums) {
-        final assets = await album.getAssetListRange(start: 0, end: await album.assetCountAsync);
+        final totalInAlbum = await album.assetCountAsync;
+        final assetsToFetch = totalInAlbum > 500 ? 500 : totalInAlbum;
+        final assets = await album.getAssetListRange(start: 0, end: assetsToFetch);
         screenshotAssetIds.addAll(assets.map((a) => a.id));
         screenshotAssets.addAll(assets);
     }
     
-    // Get all other assets
+    // Get a limited number of recent other assets
     for (final album in otherAlbums) {
-        final assets = await album.getAssetListRange(start: 0, end: await album.assetCountAsync);
+        final totalInAlbum = await album.assetCountAsync;
+        final assetsToFetch = totalInAlbum > 500 ? 500 : totalInAlbum;
+        final assets = await album.getAssetListRange(start: 0, end: assetsToFetch);
         otherAssets.addAll(assets);
     }
     
@@ -128,7 +132,7 @@ class PhotoCleanerService {
     otherAssets.shuffle();
 
     // Apply the 60/40 ratio
-    const totalToAnalyze = 300;
+    const totalToAnalyze = 200;
     final screenshotsCount = (totalToAnalyze * 0.6).round();
     final othersCount = totalToAnalyze - screenshotsCount;
 

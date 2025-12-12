@@ -311,6 +311,24 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Total Space Saved'**
   String get totalSpaceSaved;
+
+  /// No description provided for @readyToClean.
+  ///
+  /// In en, this message translates to:
+  /// **'Ready to Clean?'**
+  String get readyToClean;
+
+  /// No description provided for @letsFindPhotos.
+  ///
+  /// In en, this message translates to:
+  /// **'Let\'s find some photos you can safely delete.'**
+  String get letsFindPhotos;
+
+  /// No description provided for @storageSpaceSaved.
+  ///
+  /// In en, this message translates to:
+  /// **'Storage Space Saved'**
+  String get storageSpaceSaved;
 }
 
 class _AppLocalizationsDelegate

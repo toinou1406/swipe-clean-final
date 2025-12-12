@@ -33,6 +33,10 @@ class NoiseBox extends StatelessWidget {
               'assets/images/noise.png', // Ensure this image is in your assets
               repeat: ImageRepeat.repeat,
               fit: BoxFit.cover,
+              errorBuilder: (context, error, stackTrace) {
+                // If the noise image fails, just show a transparent container.
+                return Container();
+              },
             ),
           ),
           // The actual content

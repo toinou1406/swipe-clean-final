@@ -229,6 +229,10 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
     if (mounted) {
       setState(() => _isInitialized = true);
     }
+    // Automatically start sorting if no previous results are loaded.
+    if (_selectedPhotos.isEmpty && !_hasScanned) {
+      _sortPhotos(rescan: true);
+    }
   }
 
   @override
@@ -356,8 +360,8 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
             SnackBar(content: Text(l10n.noMorePhotos)),
           );
         }
-        setState(() => _selectedPhotos = photos);
-        _preCachePhotoFiles(photos);
+        setState(() => _selectedPhotos = photos.take(15).toList());
+        // _preCachePhotoFiles(photos);
       }
     } catch (e, s) {
       developer.log('Error during photo sorting', name: 'photo_cleaner.error', error: e, stackTrace: s);
@@ -597,18 +601,62 @@ class PhotoCard extends StatefulWidget {
   State<PhotoCard> createState() => _PhotoCardState();
 }
 
-class _PhotoCardState extends State<PhotoCard> {
+class _PhotoCardState extends State<PhotoCard> with SingleTickerProviderStateMixin {
   Uint8List? _thumbnailData;
+  late final AnimationController _controller;
+  late final Animation<double> _animation;
 
   @override
   void initState() {
     super.initState();
     _loadThumbnail();
+    _controller = AnimationController(
+      duration: const Duration(milliseconds: 400),
+      vsync: this,
+    );
+    _animation = Tween<double>(begin: -0.02, end: 0.02).animate(
+      CurvedAnimation(
+        parent: _controller,
+        curve: Curves.easeInOut,
+      ),
+    );
+
+    if (widget.isIgnored) {
+      _controller.repeat(reverse: true);
+    } else {
+      // Set the controller to the middle of the animation (0.5), which corresponds to a rotation of 0.
+      _controller.value = 0.5;
+    }
+  }
+
+  @override
+  void didUpdateWidget(PhotoCard oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (widget.isIgnored != oldWidget.isIgnored) {
+      if (widget.isIgnored) {
+        _controller.repeat(reverse: true);
+      } else {
+        _controller.stop();
+        // Animate back to the middle (0 rotation) smoothly.
+        _controller.animateTo(0.5, duration: const Duration(milliseconds: 200), curve: Curves.easeOut);
+      }
+    }
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
   }
 
   Future<void> _loadThumbnail() async {
-    final data = await widget.photo.asset.thumbnailDataWithSize(const ThumbnailSize(250, 250));
-    if (mounted) setState(() => _thumbnailData = data);
+    try {
+      final data = await widget.photo.asset.thumbnailDataWithSize(const ThumbnailSize(250, 250));
+      if (mounted) setState(() => _thumbnailData = data);
+    } catch (e, s) {
+      developer.log('Error loading thumbnail', name: 'photo_cleaner.error', error: e, stackTrace: s);
+      if (mounted) setState(() => _thumbnailData = null);
+    }
   }
 
   @override
@@ -616,53 +664,62 @@ class _PhotoCardState extends State<PhotoCard> {
     final theme = Theme.of(context);
     final l10n = AppLocalizations.of(context);
 
-    return GestureDetector(
-      onTap: widget.onOpenFullScreen,
-      onDoubleTap: widget.onToggleKeep,
-      child: Hero(
-        tag: widget.photo.asset.id,
-        child: ClipRRect(
-          borderRadius: BorderRadius.circular(16),
-          child: Stack(
-            fit: StackFit.expand,
-            children: [
-              if (_thumbnailData != null)
-                Image.memory(_thumbnailData!, fit: BoxFit.cover)
-              else
-                Container(color: theme.colorScheme.surface),
-              AnimatedContainer(
-                duration: const Duration(milliseconds: 300),
-                decoration: BoxDecoration(
-                  color: widget.isIgnored ? Colors.black.withAlpha(128) : Colors.transparent, // ~0.5 opacity
-                  border: Border.all(
-                    color: widget.isIgnored ? theme.colorScheme.primary : Colors.transparent,
-                    width: 3.0,
+    return RotationTransition(
+      turns: _animation,
+      child: GestureDetector(
+        onTap: widget.onOpenFullScreen,
+        onDoubleTap: widget.onToggleKeep,
+        child: Hero(
+          tag: widget.photo.asset.id,
+          child: ClipRRect(
+            borderRadius: BorderRadius.circular(16),
+            child: Stack(
+              fit: StackFit.expand,
+              children: [
+                if (_thumbnailData != null)
+                  Image.memory(
+                    _thumbnailData!,
+                    fit: BoxFit.cover,
+                    errorBuilder: (context, error, stackTrace) {
+                      return Container(color: theme.colorScheme.surface);
+                    },
+                  )
+                else
+                  Container(color: theme.colorScheme.surface),
+                AnimatedContainer(
+                  duration: const Duration(milliseconds: 300),
+                  decoration: BoxDecoration(
+                    color: widget.isIgnored ? Colors.black.withAlpha(128) : Colors.transparent, // ~0.5 opacity
+                    border: Border.all(
+                      color: widget.isIgnored ? theme.colorScheme.primary : Colors.transparent,
+                      width: 3.0,
+                    ),
+                    borderRadius: BorderRadius.circular(13),
                   ),
-                  borderRadius: BorderRadius.circular(13),
                 ),
-              ),
-              AnimatedOpacity(
-                opacity: widget.isIgnored ? 1.0 : 0.0,
-                duration: const Duration(milliseconds: 300),
-                child: Center(
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Icon(Icons.check_circle_outline_rounded, color: Colors.white.withAlpha(229), size: 32), // ~0.9 opacity
-                      const SizedBox(height: 4),
-                      Text(
-                        l10n.keep.toUpperCase(),
-                        style: theme.textTheme.bodyMedium?.copyWith(
-                          color: Colors.white.withAlpha(229), // ~0.9 opacity
-                          fontWeight: FontWeight.bold,
-                          letterSpacing: 0.5,
+                AnimatedOpacity(
+                  opacity: widget.isIgnored ? 1.0 : 0.0,
+                  duration: const Duration(milliseconds: 300),
+                  child: Center(
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Icon(Icons.check_circle_outline_rounded, color: Colors.white.withAlpha(229), size: 32), // ~0.9 opacity
+                        const SizedBox(height: 4),
+                        Text(
+                          l10n.keep.toUpperCase(),
+                          style: theme.textTheme.bodyMedium?.copyWith(
+                            color: Colors.white.withAlpha(229), // ~0.9 opacity
+                            fontWeight: FontWeight.bold,
+                            letterSpacing: 0.5,
+                          ),
                         ),
-                      ),
-                    ],
+                      ],
+                    ),
                   ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
         ),
       ),
@@ -709,6 +766,8 @@ class _EmptyStateState extends State<EmptyState> with SingleTickerProviderStateM
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final l10n = AppLocalizations.of(context);
+    // Note to user: Run 'flutter pub get' to generate new localization files.
 
     return FadeTransition(
       opacity: _fadeAnimation,
@@ -720,7 +779,7 @@ class _EmptyStateState extends State<EmptyState> with SingleTickerProviderStateM
             const Spacer(flex: 2),
             // A more engaging title
             Text(
-              "Ready to Clean?", // This could be localized
+              l10n.readyToClean, // This could be localized
               style: theme.textTheme.displaySmall?.copyWith(
                 fontWeight: FontWeight.bold,
               ),
@@ -728,7 +787,7 @@ class _EmptyStateState extends State<EmptyState> with SingleTickerProviderStateM
             ),
             const SizedBox(height: 16),
             Text(
-              "Let's find some photos you can safely delete.", // This could also be localized
+              l10n.letsFindPhotos, // This could also be localized
               style: theme.textTheme.titleMedium?.copyWith(
                 color: theme.colorScheme.onSurface.withAlpha(179),
               ),
@@ -737,28 +796,36 @@ class _EmptyStateState extends State<EmptyState> with SingleTickerProviderStateM
             const Spacer(flex: 1),
 
             // The main stats cards in a more interesting layout
-            Row(
-              children: [
-                Expanded(
-                  child: StatCard(
-                    icon: Icons.cleaning_services_rounded,
-                    iconColor: theme.colorScheme.secondary,
-                    title: widget.totalSpaceSavedText,
-                    value: widget.formattedSpaceSaved,
-                  ),
+            Card(
+              child: Padding(
+                padding: const EdgeInsets.all(16.0),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      l10n.storageSpaceSaved, // Hardcoded for now
+                      style: theme.textTheme.titleLarge,
+                    ),
+                    const SizedBox(height: 8),
+                    if (widget.storageInfo != null && widget.storageInfo!.totalSpace > 0)
+                      LinearProgressIndicator(
+                        value: widget.spaceSaved / widget.storageInfo!.totalSpace,
+                        minHeight: 10,
+                        borderRadius: BorderRadius.circular(5),
+                      )
+                    else
+                      const LinearProgressIndicator(
+                        value: 0,
+                        minHeight: 10,
+                      ),
+                    const SizedBox(height: 8),
+                    Text(
+                      widget.formattedSpaceSaved,
+                      style: theme.textTheme.bodyLarge,
+                    ),
+                  ],
                 ),
-                const SizedBox(width: 16),
-                Expanded(
-                  child: StatCard(
-                    icon: Icons.storage_rounded,
-                    iconColor: theme.colorScheme.primary,
-                    title: "Storage Used", // Localize this
-                    value: widget.storageInfo != null
-                        ? '${(widget.storageInfo!.usedSpace / (1024 * 1024 * 1024)).toStringAsFixed(1)} GB'
-                        : "-- GB",
-                  ),
-                ),
-              ],
+              ),
             ),
             const SizedBox(height: 40),
 

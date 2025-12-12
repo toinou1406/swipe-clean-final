@@ -84,5 +84,8 @@
     "permissionTitle": "Photo Access Required",
     "permissionDescription": "FastClean needs access to your photos to help you clean them up.",
     "grantPermission": "Grant Permission",
-    "totalSpaceSaved": "Total Space Saved"
+    "totalSpaceSaved": "Total Space Saved",
+    "readyToClean": "Ready to Clean?",
+    "letsFindPhotos": "Let's find some photos you can safely delete.",
+    "storageSpaceSaved": "Storage Space Saved"
 }

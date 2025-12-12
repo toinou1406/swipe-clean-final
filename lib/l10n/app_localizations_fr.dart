@@ -129,4 +129,14 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get totalSpaceSaved => 'Espace total économisé';
+
+  @override
+  String get readyToClean => 'Prêt à nettoyer ?';
+
+  @override
+  String get letsFindPhotos =>
+      'Trouvons des photos que vous pouvez supprimer en toute sécurité.';
+
+  @override
+  String get storageSpaceSaved => 'Espace de stockage économisé';
 }
